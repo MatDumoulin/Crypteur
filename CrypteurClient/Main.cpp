@@ -1,10 +1,16 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 using namespace std;
 
 string demanderSourceDuTexte();
 string prendreTexteAModifier(string choixSource);
+string lireTexteDansFichier(string filePath);
 string choixAlgorithme();
+string veutEncoder();
+string veutEnregistrerDansFichier();
+void envoyerDansFichier(string texte);
+
 
 
 int main()
@@ -20,42 +26,23 @@ int main()
 
    do
    {
+      system("cls");
+      cout << "Voici votre chaine de caractere : " << endl <<  texte << endl << endl;
       choix = choixAlgorithme();
+      action = veutEncoder();
 
+      choix = veutEnregistrerDansFichier();
 
-      // Encoder ou décoder? ////////////////////////////////////////////////////////////
-      do
-      {
-         cout << "Voulez-vous encoder ou decoder?(encoder/decoder)" << endl;
-         cin >> action;
-
-         if (action != "encoder" && action != "decoder")
-            cout << "Ce choix n'est pas valide" << endl;
-      } while (action != "encoder" && action != "decoder");
-
-
-      // Envoyer la réponse à la console ////////////////////////////////////////////////////////////////////////////
-
-
-
-      // Post traitement //////////////////////////////////////////////////////////////////
-      do
-      {
-
-         cout << "Voulez-vous envoyer la reponse dans un fichier texte? (o/n)" << endl;
-         cin >> choix;
-
-         if (choix != "o" && choix != "n")
-            cout << "Ce choix n'est pas valide" << endl;
-      } while (choix != "o" && choix != "n");
+      if (choix == "o")
+         envoyerDansFichier(texte);
 
       do
       {
-         cout << "Voulez-vous commettre une autre action sur cette chaine de caractère? (o/n) " << endl;
+         cout << "Voulez-vous commettre une autre action sur cette chaine de caractere? (o/n) " << endl;
          cin >> choix;
       } while (choix != "o" && choix != "n");
       
-   } while (choix != "n");
+   } while (choix == "o");
 
    return 0;
 }
@@ -79,22 +66,69 @@ string demanderSourceDuTexte()
 string prendreTexteAModifier(string choixSource)
 {
    string texte = "";
+   string filePath = "";
    // Récuperer la chaine à modifier
    do
    {
       if (choixSource == "o")
       {
-         // Code pour ouvrir un fichier texte et le lire. //////////////////////////////////////////////////////
+         cout << "Veuillez entrer le chemin(path) du fichier : " << endl << endl;
+         cin.ignore(cin.rdbuf()->in_avail());
+         getline(cin, filePath);
+         texte = lireTexteDansFichier(filePath);
       }
       else
       {
          cout << "Veuillez entrer la chaine de caractere que vous voulez modifier : " << endl;
-         cin >> texte;
+         // Vider le tampon
+         cin.ignore(cin.rdbuf()->in_avail());
+         getline(cin, texte);
       }
 
       if (texte == "")
-         cout << "Vous devez entrer une chaine de caractère qui n'est pas vide." << endl;
+         cout << "Vous devez entrer une chaine de caractere qui n'est pas vide." << endl;
    } while (texte == "");
+
+   return texte;
+}
+
+void envoyerDansFichier(string texte)
+{
+   string filePath = "";
+   ofstream Fichier;
+   do
+   {
+      cout << "Veuillez entrer le chemin du fichier dans lequel vous voulez sauvegarder ce texte : ";
+      cin.ignore(cin.rdbuf()->in_avail());
+      getline(cin, filePath);
+
+      Fichier.open(filePath);
+      if (!Fichier.is_open())
+         cout << "Ce chemin de fichier n'est pas valide." << endl;
+      else
+         Fichier << texte;
+   } while (!Fichier.is_open());
+
+}
+string lireTexteDansFichier(string filePath)
+{
+   string texte = "";
+   ifstream Fichier(filePath);
+
+   if (!Fichier.is_open())
+      cout << "Ce path n'est pas valide." << endl;
+   else
+   {
+      string temp = "";
+      while (!Fichier.eof())
+      {
+         if (temp != "")
+            texte += "\n";
+         getline(Fichier, temp);
+         texte += temp;
+      }
+      Fichier.close();
+   }
 
    return texte;
 }
@@ -102,7 +136,6 @@ string prendreTexteAModifier(string choixSource)
 string choixAlgorithme()
 {
    string choix = "";
-
    cout << "Voici la liste des algorithmes que vous pouvez utiliser :" << endl;
    cout << "1- Mirroiter" << endl << "2- Circuler" << endl << "3- Rotationer" << endl << endl;
 
@@ -117,6 +150,37 @@ string choixAlgorithme()
    } while (choix != "1" && choix != "2" && choix != "3");
 
    system("cls");
+
+   return choix;
+}
+
+string veutEncoder() {
+   string action = "";
+   do
+   {
+      cout << "Voulez-vous encoder ou decoder?(encoder/decoder)" << endl;
+      cin >> action;
+
+      if (action != "encoder" && action != "decoder")
+         cout << "Ce choix n'est pas valide" << endl;
+   } while (action != "encoder" && action != "decoder");
+
+   return action;
+}
+
+string veutEnregistrerDansFichier()
+{
+   string choix = "";
+
+   // Post traitement //////////////////////////////////////////////////////////////////
+   do
+   {
+      cout << "Voulez-vous envoyer la reponse dans un fichier texte? (o/n)" << endl;
+      cin >> choix;
+
+      if (choix != "o" && choix != "n")
+         cout << "Ce choix n'est pas valide" << endl;
+   } while (choix != "o" && choix != "n");
 
    return choix;
 }

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include "zeCrypter.dll"
+
 using namespace std;
 
 string demanderSourceDuTexte();
@@ -19,9 +21,11 @@ int main()
    string action = "";
    string texte = "";
 
+  
 
+
+   
    choix = demanderSourceDuTexte();
-
    texte = prendreTexteAModifier(choix);
 
    do
@@ -67,7 +71,7 @@ string prendreTexteAModifier(string choixSource)
 {
    string texte = "";
    string filePath = "";
-   // RÈcuperer la chaine ‡ modifier
+   // RÈcuperer la chaine ÅEmodifier
    do
    {
       if (choixSource == "o")
